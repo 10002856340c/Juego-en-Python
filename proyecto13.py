@@ -1,3 +1,4 @@
+
 import pygame
 import sys
 
@@ -25,32 +26,67 @@ pygame.display.set_icon(icono)
 # Es decir en este caso vamos a cargar nuestra imagen que va a representar nuestro jugador
 imgJugador = pygame.image.load("cohete.png")
 #---------------------------------------------------------------------------------------------------------------------------------------#
-# 7)Posicion de nuestro jugador
+# 7)Posicion inicial de nuestro jugador
 posicionX = 360
 posicionY = 535
+# 8) Posicion del jugador cuando se opriman las teclas
+posicion_en_Movimiento = 0
 
 
-def jugador():
+def jugador(x, y):
     # blit()--> Para indicar que y en que posicion va estar en mi pantalla ( imgJugador, la posicion en el eje x ,posicion en el eje y)
-    pantalla.blit(imgJugador, (posicionX, posicionY))
+    pantalla.blit(imgJugador, (x, y))
 
 
 #---------------------------------------------------------------------------------------------------------------------------------------#
-# 8) creamos un bucle while para que se ejecute nuetro programa cada ves que sea True
+# 9) creamos un bucle while para que se ejecute nuetro programa cada ves que sea True
 while True:
-    # 9) Color Fondo Pantalla
+    # 10 ) Movimiento del jugador
+
+    # ---------------------------------------------#
+    # 11) Color Fondo Pantalla
     # fill ()--> rellena en formato rgb nuestra interfaz
     pantalla.fill((48, 42, 161))
+
     # ---------------------------------------------#
-    # 10) Boton close
-    # Creamos un un boton funcional en el cual va hacer la [X] que va ha cerrar el programa cada vez que damos click
-    # pygame.QUIT --> significa cuando el usuario le da click a la pantalla
-    # sys.exit --> Sale del sistema cada vez que pase esa condicion
+    # 12) hacemos un  loop for por cada evento que haga el usuario
     for click in pygame.event.get():
+
+        # 13) Boton close
+        # Creamos un un boton funcional en el cual va hacer la [X] que va ha cerrar el programa cada vez que damos click , esto es una representacion de un evento
+        # pygame.QUIT --> significa cuando el usuario le da click a la pantalla
+        # sys.exit --> Sale del sistema cada vez que pase esa condicion
         if click.type == pygame.QUIT:
             sys.exit()
+        # ---------------------------------------------#
+        # 14)Tecla Derecha y Tecla Izquierda  cuando se presionan
+        # en este apartado crearemos condiciones cuando ocurra un evento por parte del usuario
+        # Si el click del loop for es == a oprimir una tecla :
+        # type --> para saber que typo es
+        if click.type == pygame.KEYDOWN:
+            # ---------------------------------------------#
+            # si el click del loop for es == a oprimir una tecla izquierda
+            # key--> para saber que tipo de tecla es:
+            if click.key == pygame.K_LEFT:
+                # vamos a mover la figura hacia la izquirda con un ("-")
+                posicion_en_Movimiento = posicion_en_Movimiento-0.5
+            # --------------------------------------------------------------#
+            # si el click del loop for es == a oprimir una tecla derecha
+            # key--> para saber que tipo de tecla es:
+            if click.key == pygame.K_RIGHT:
+                # vamos a mover la figura hacia la derecha con un ("+")
+                posicion_en_Movimiento = posicion_en_Movimiento+0.5
+            # --------------------------------------------------------------#
+        # 15)Tecla Derecha y Tecla Izquierda  cuando se dejan de presionar
+        # si el click del loop for es == a dejar de presionar la tecla:
+        if click.type == pygame.KEYUP:
+            # si el click del loop for es == a la tecla izquierda o tecla derecha :
+            if click.key == pygame.K_LEFT or click.key == pygame.K_RIGHT:
+                posicion_en_Movimiento = 0
+
     # --------------------------------------------#
-    # 11) Llamamos a la funcion previamente
-    jugador()
+    # 16 )En esta parte modificamos la variable PosicionX sumarle la variable donde esta nuestro jugador en movimiento
+    posicionX = posicionX+posicion_en_Movimiento
+    jugador(posicionX, posicionY)
     # update () --> para cargar
     pygame.display.update()
