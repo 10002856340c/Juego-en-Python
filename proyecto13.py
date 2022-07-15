@@ -40,20 +40,21 @@ posicion_en_MovimientoP = 0
 
 #---------------------------------------------------------------------------------------------------------------------------------------#
 # 9)Creamos a nuestro Enemigo
-imgEnemigo = pygame.image.load("enemigo.png")
 
-# 10) Posicion inicial a nuestro Enemigo
-# utilizamos la libreria random.randint() --> para que nos genere numeros aleatorios
+imgEnemigo = []
+posicionXE = []
+posicionYE = []
+posicion_en_MovimientoX_E = []
+posicion_en_MovimientoY_E = []
+cantidad_enemigos = 8
 
-# en este caso algenerarnos numeros aleatoria el enemigo va aparecer en una posicion diferente
-# en el eje x va ir de ( 0, hasta el ancho de la altura en el eje y que en este caso es de 800)
-# ¿Por que de 0 a 736? -- >por que recordemos que la figura tiene aproximadamente 60 px se le resta este valor
-posicionXE = random.randint(0, 736)
-# y en el eje Y va ir de 50 como mas alto y 200 como mas bajo
-posicionYE = random.randint(50, 200)
-# 11) Posicion del Enemigo  cada vez que se ejecuta el lopp while
-posicion_en_MovimientoX_E = 0.3
-posicion_en_MovimientoY_E = 50
+for e in range(cantidad_enemigos):
+    imgEnemigo.append(pygame.image.load("enemigo.png"))
+    posicionXE.append(random.randint(0, 736))
+    posicionYE.append(random.randint(50, 200))
+    posicion_en_MovimientoX_E.append(0.3)
+    posicion_en_MovimientoY_E.append(50)
+
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------
 # FUNCIONES
@@ -64,9 +65,9 @@ def jugador(x, y):
     pantalla.blit(imgJugador, (x, y))
 
 
-def enemigo(x, y):
+def enemigo(x, y, ene):
     # blit()--> Para indicar que y en que posicion va estar en mi pantalla ( imgJugador, la posicion en el eje x ,posicion en el eje y)
-    pantalla.blit(imgEnemigo, (x, y))
+    pantalla.blit(imgEnemigo[ene], (x, y))
 
 
 def bala(x, y):
@@ -76,7 +77,9 @@ def bala(x, y):
 
 
 def detectarColicion(x_1, y_1, x_2, y_2):
+    # hacemos la siguiente formula √((x_2-x_1)²+(y_2-y_1)² para hallar la distancia entre dos puntos
     distancia = math.sqrt(math.pow((x_2-x_1), 2)+math.pow((y_2-y_1), 2))
+    # si la distancia entre la bala y el enemigo es menor a 27
     if distancia < 27:
         return True
     else:
@@ -147,21 +150,41 @@ while True:
     # --------------------------------------------#
     # 19 )Jugador Enemigo
     # En esta parte modificamos la variable PosicionXE para sumarle la variable donde esta nuestro jugador en movimiento
-    posicionXE = posicionXE+posicion_en_MovimientoX_E
-    # ----------------------------------------------------------#
-    # 20) Mantener el Enemigo  dentro de los bordes de la interfaz
-    # Si el jugador en el eje X es menor o igual  a 0 en el eje x
-    if posicionXE <= 0:
-        # La posicion va hacer 0.3 es decir se va ir para la derecha
-        posicion_en_MovimientoX_E = 0.3
-        # La posicion en el eje Y va ir bajando 50 px cada vez que se cumpla la condicion
-        posicionYE = posicionYE + posicion_en_MovimientoY_E
-    # Si el jugador en el eje X es mayor o igual  a 736 en el eje y
-    elif posicionXE >= 736:
-        # la posicion va a hacer -0.3 es decir se va a mover hacia la izquierda
-        posicion_en_MovimientoX_E = -0.3
-        # La posicion en el eje Y va ir bajando 50 px cada vez que se cumpla la condicion
-        posicionYE = posicionYE + posicion_en_MovimientoY_E
+    for e in range(cantidad_enemigos):
+        posicionXE[e] += posicion_en_MovimientoX_E[e]
+        # ----------------------------------------------------------#
+        # 20) Mantener el Enemigo  dentro de los bordes de la interfaz
+        # Si el jugador en el eje X es menor o igual  a 0 en el eje x
+        if posicionXE[e] <= 0:
+            # La posicion va hacer 0.3 es decir se va ir para la derecha
+            posicion_en_MovimientoX_E[e] = 0.3
+            # La posicion en el eje Y va ir bajando 50 px cada vez que se cumpla la condicion
+            posicionYE[e] += posicion_en_MovimientoY_E[e]
+        # Si el jugador en el eje X es mayor o igual  a 736 en el eje y
+        elif posicionXE[e] >= 736:
+            # la posicion va a hacer -0.3 es decir se va a mover hacia la izquierda
+            posicion_en_MovimientoX_E[e] = -0.3
+            # La posicion en el eje Y va ir bajando 50 px cada vez que se cumpla la condicion
+            posicionYE[e] += posicion_en_MovimientoY_E[e]
+
+            # llamamos a la funcion detectar colicion
+        colicion = detectarColicion(
+            posicionXE[e], posicionYE[e], posicionbalaX, posicionbalaY)
+        # si se cumple esta condicion
+        if colicion is True:
+            # la posicion de la bala vuelve a estar en la posicion de la nave o jugador
+            posicionbalaY = 500
+            # desaparece la bala
+            balaVisible = False
+            # va aumenta un puntaje
+            puntaje = puntaje+1
+            # se imprime en pantalla
+            print(puntaje)
+            # y autamaticamente se reinicia la posicin del jugador
+            posicionXE[e] = random.randint(0, 736)
+            posicionYE[e] = random.randint(50, 200)
+            # Llmamos a la funcion Enemigo
+        enemigo(posicionXE[e], posicionYE[e], e)
 
     # ----------------------------------------------------------------------------------------------------------------------------------#
     # 21) jugador Principal
@@ -187,25 +210,8 @@ while True:
         posicionbalaY -= posicionMovimientoBalaY
 
     # 24)Funciones
-    # llamamos a la funcion detectar colicion
-    colicion = detectarColicion(
-        posicionXE, posicionYE, posicionbalaX, posicionbalaY)
-    # si se cumple esta condicion
-    if colicion is True:
-        # la posicion de la bala vuelve a estar en la posicion de la nave o jugador
-        posicionbalaY = 500
-        # desaparece la bala
-        balaVisible = False
-        # va aumenta un puntaje
-        puntaje = puntaje+1
-        # se imprime en pantalla
-        print(puntaje)
-        # y autamaticamente se reinicia la posicin del jugador
-        posicionXE = random.randint(0, 736)
-        posicionYE = random.randint(50, 200)
+
     # Llmamos a la funcion jugador Principal
     jugador(posicionX, posicionY)
-    # Llmamos a la funcion Enemigo
-    enemigo(posicionXE, posicionYE)
     # update () --> para cargar
     pygame.display.update()
