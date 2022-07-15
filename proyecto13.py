@@ -88,5 +88,16 @@ while True:
     # 16 )En esta parte modificamos la variable PosicionX sumarle la variable donde esta nuestro jugador en movimiento
     posicionX = posicionX+posicion_en_Movimiento
     jugador(posicionX, posicionY)
+    # --------------------------------------------#
+    # 17) Mantener el jugador dentro de los bordes de la interfaz
+    # Si el jugador en el eje X es menor a 0 en el eje x
+    if posicionX < 0:
+        # La posicion va hacer 0
+        posicionX = 0
+    # Si el jugador en el eje X es mayor a 736
+    elif posicionX > 736:
+        # la posicion va hacer la misma
+        posicionX = 736
+    # --------------------------------------------#
     # update () --> para cargar
     pygame.display.update()
