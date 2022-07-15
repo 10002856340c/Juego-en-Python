@@ -36,12 +36,6 @@ posicionY = 500
 # 8) Posicion del jugador cuando se opriman las teclas
 posicion_en_MovimientoP = 0
 
-
-def jugador(x, y):
-    # blit()--> Para indicar que y en que posicion va estar en mi pantalla ( imgJugador, la posicion en el eje x ,posicion en el eje y)
-    pantalla.blit(imgJugador, (x, y))
-
-
 #---------------------------------------------------------------------------------------------------------------------------------------#
 # 9)Creamos a nuestro Enemigo
 imgEnemigo = pygame.image.load("enemigo.png")
@@ -59,11 +53,34 @@ posicionYE = random.randint(50, 200)
 posicion_en_MovimientoX_E = 0.3
 posicion_en_MovimientoY_E = 50
 
+# ----------------------------------------------------------------------------------------------------------------------------------------------
+# FUNCIONES
+
+
+def jugador(x, y):
+    # blit()--> Para indicar que y en que posicion va estar en mi pantalla ( imgJugador, la posicion en el eje x ,posicion en el eje y)
+    pantalla.blit(imgJugador, (x, y))
+
 
 def enemigo(x, y):
     # blit()--> Para indicar que y en que posicion va estar en mi pantalla ( imgJugador, la posicion en el eje x ,posicion en el eje y)
     pantalla.blit(imgEnemigo, (x, y))
 
+
+def bala(x, y):
+    global balaVisible
+    balaVisible = True
+    pantalla.blit(imgBala, (x+15, y+10))
+
+
+#---------------------------------------------------------------------------------------------------------------------------------------#
+# 12)Posicion inicial de nuestra Bala
+imgBala = pygame.image.load('bala.png')
+posicionbalaX = 0
+posicionbalaY = 500
+posicionMovimientoBalaX = 0
+posicionMovimientoBalaY = 1
+balaVisible = False
 
 #---------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -87,7 +104,7 @@ while True:
         if click.type == pygame.QUIT:
             sys.exit()
         # ---------------------------------------------#
-        # 17)Tecla Derecha y Tecla Izquierda  cuando se presionan
+        # 17)funciones de las teclas
         # en este apartado crearemos condiciones cuando ocurra un evento por parte del usuario
         # Si el click del loop for es == a oprimir una tecla :
         # type --> para saber que typo es
@@ -104,6 +121,8 @@ while True:
             if click.key == pygame.K_RIGHT:
                 # vamos a mover la figura hacia la derecha con un ("+")
                 posicion_en_MovimientoP = posicion_en_MovimientoP+0.8
+            if click.key == pygame.K_SPACE:
+                bala(posicionX, posicionbalaY)
             # --------------------------------------------------------------#
         # 18)Tecla Derecha y Tecla Izquierda  cuando se dejan de presionar
         # si el click del loop for es == a dejar de presionar la tecla:
@@ -116,7 +135,7 @@ while True:
     # 19 )Jugador Enemigo
     # En esta parte modificamos la variable PosicionXE para sumarle la variable donde esta nuestro jugador en movimiento
     posicionXE = posicionXE+posicion_en_MovimientoX_E
-    # --------------------------------------------#
+    # ----------------------------------------------------------#
     # 20) Mantener el Enemigo  dentro de los bordes de la interfaz
     # Si el jugador en el eje X es menor o igual  a 0 en el eje x
     if posicionXE <= 0:
@@ -146,7 +165,11 @@ while True:
         # la posicion va hacer la misma
         posicionX = 736
     # --------------------------------------------#
-    # 23)Funciones
+    # 23)Movimiento bala
+    if balaVisible:
+        bala(posicionX, posicionbalaY)
+        posicionbalaY -= posicionMovimientoBalaY
+    # 224)Funciones
     # Llmamos a la funcion jugador Principal
     jugador(posicionX, posicionY)
     # Llmamos a la funcion Enemigo
