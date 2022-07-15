@@ -86,6 +86,12 @@ def detectarColicion(x_1, y_1, x_2, y_2):
         return False
 
 
+def mostrar_puntaje(x, y):
+    # render --> nos va a mostrar en pantalla el puntaje , con un color
+    texto = fuente.render(f"Puntaje : {puntaje}", True, (255, 255, 255))
+    pantalla.blit(texto, (x, y))
+
+
 #---------------------------------------------------------------------------------------------------------------------------------------#
 # 12)Posicion inicial de nuestra Bala
 imgBala = pygame.image.load('bala.png')
@@ -94,7 +100,12 @@ posicionbalaY = 500
 posicionMovimientoBalaX = 0
 posicionMovimientoBalaY = 1
 balaVisible = False
+# Puntaje
 puntaje = 0
+fuente = pygame.font.Font('freesansbold.ttf', 32)
+textoX = 10
+texto_y = 10
+
 
 #---------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -178,8 +189,7 @@ while True:
             balaVisible = False
             # va aumenta un puntaje
             puntaje = puntaje+1
-            # se imprime en pantalla
-            print(puntaje)
+
             # y autamaticamente se reinicia la posicin del jugador
             posicionXE[e] = random.randint(0, 736)
             posicionYE[e] = random.randint(50, 200)
@@ -213,5 +223,6 @@ while True:
 
     # Llmamos a la funcion jugador Principal
     jugador(posicionX, posicionY)
+    mostrar_puntaje(textoX, texto_y)
     # update () --> para cargar
     pygame.display.update()
