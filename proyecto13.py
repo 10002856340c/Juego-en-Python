@@ -1,7 +1,9 @@
 
+from numpy import mat
 import pygame
 import sys
 import random
+import math
 # 1) importamos la libreria pygame
 # 2) inicializamos la libreria pygame con .init para traer todos los atributos y herramientas que tiene pygame
 pygame.init()
@@ -73,6 +75,14 @@ def bala(x, y):
     pantalla.blit(imgBala, (x+15, y+10))
 
 
+def detectarColicion(x_1, y_1, x_2, y_2):
+    distancia = math.sqrt(math.pow((x_2-x_1), 2)+math.pow((y_2-y_1), 2))
+    if distancia < 27:
+        return True
+    else:
+        return False
+
+
 #---------------------------------------------------------------------------------------------------------------------------------------#
 # 12)Posicion inicial de nuestra Bala
 imgBala = pygame.image.load('bala.png')
@@ -81,6 +91,7 @@ posicionbalaY = 500
 posicionMovimientoBalaX = 0
 posicionMovimientoBalaY = 1
 balaVisible = False
+puntaje = 0
 
 #---------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -122,7 +133,9 @@ while True:
                 # vamos a mover la figura hacia la derecha con un ("+")
                 posicion_en_MovimientoP = posicion_en_MovimientoP+0.8
             if click.key == pygame.K_SPACE:
-                bala(posicionX, posicionbalaY)
+                if not balaVisible:
+                    posicionbalaX = posicionX
+                    bala(posicionbalaY, posicionbalaY)
             # --------------------------------------------------------------#
         # 18)Tecla Derecha y Tecla Izquierda  cuando se dejan de presionar
         # si el click del loop for es == a dejar de presionar la tecla:
@@ -166,10 +179,30 @@ while True:
         posicionX = 736
     # --------------------------------------------#
     # 23)Movimiento bala
+    if posicionbalaY <= -64:
+        posicionbalaY = 500
+        balaVisible = False
     if balaVisible:
-        bala(posicionX, posicionbalaY)
+        bala(posicionbalaX, posicionbalaY)
         posicionbalaY -= posicionMovimientoBalaY
-    # 224)Funciones
+
+    # 24)Funciones
+    # llamamos a la funcion detectar colicion
+    colicion = detectarColicion(
+        posicionXE, posicionYE, posicionbalaX, posicionbalaY)
+    # si se cumple esta condicion
+    if colicion is True:
+        # la posicion de la bala vuelve a estar en la posicion de la nave o jugador
+        posicionbalaY = 500
+        # desaparece la bala
+        balaVisible = False
+        # va aumenta un puntaje
+        puntaje = puntaje+1
+        # se imprime en pantalla
+        print(puntaje)
+        # y autamaticamente se reinicia la posicin del jugador
+        posicionXE = random.randint(0, 736)
+        posicionYE = random.randint(50, 200)
     # Llmamos a la funcion jugador Principal
     jugador(posicionX, posicionY)
     # Llmamos a la funcion Enemigo
