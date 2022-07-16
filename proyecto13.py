@@ -97,8 +97,17 @@ def mostrar_puntaje(x, y):
     pantalla.blit(texto, (x, y))
 
 
-#---------------------------------------------------------------------------------------------------------------------------------------#
-# 12)Posicion inicial de nuestra Bala
+# fin del juego
+fuente_final = pygame.font.Font('freesansbold.ttf', 40)
+
+
+def texto_final():
+    mi_fuente_final = fuente_final.render("GAME OVER", True, (255, 255, 255))
+    pantalla.blit(mi_fuente_final, (60, 200))
+
+
+    #---------------------------------------------------------------------------------------------------------------------------------------#
+    # 12)Posicion inicial de nuestra Bala
 imgBala = pygame.image.load('bala.png')
 posicionbalaX = 0
 posicionbalaY = 500
@@ -170,6 +179,12 @@ while True:
     # 19 )Jugador Enemigo
     # En esta parte modificamos la variable PosicionXE para sumarle la variable donde esta nuestro jugador en movimiento
     for e in range(cantidad_enemigos):
+        # fin del juego
+        if posicionYE[e] > 350:
+            for k in range(cantidad_enemigos):
+                posicionYE[k] = 1000
+            texto_final()
+            break
         posicionXE[e] += posicion_en_MovimientoX_E[e]
         # ----------------------------------------------------------#
         # 20) Mantener el Enemigo  dentro de los bordes de la interfaz
