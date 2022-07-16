@@ -1,9 +1,10 @@
 
-from numpy import mat
+
 import pygame
 import sys
 import random
 import math
+from pygame import mixer
 # 1) importamos la libreria pygame
 # 2) inicializamos la libreria pygame con .init para traer todos los atributos y herramientas que tiene pygame
 pygame.init()
@@ -55,7 +56,11 @@ for e in range(cantidad_enemigos):
     posicion_en_MovimientoX_E.append(0.3)
     posicion_en_MovimientoY_E.append(50)
 
-
+# Agregar musica
+# cargamos la musica atravez con mixer.music.load()
+mixer.music.load('MusicaFondo.mp3')
+# para que suene la musica damos play.load(-1) para que suene infinitamente
+mixer.music.play(-1)
 # ----------------------------------------------------------------------------------------------------------------------------------------------
 # FUNCIONES
 
@@ -147,6 +152,9 @@ while True:
                 # vamos a mover la figura hacia la derecha con un ("+")
                 posicion_en_MovimientoP = posicion_en_MovimientoP+0.8
             if click.key == pygame.K_SPACE:
+                sonido_bala = mixer.Sound('disparo.mp3')
+                # agregando sonido cada vez que se dispara bala es decir cada vez que damos space
+                sonido_bala.play()
                 if not balaVisible:
                     posicionbalaX = posicionX
                     bala(posicionbalaY, posicionbalaY)
@@ -183,6 +191,9 @@ while True:
             posicionXE[e], posicionYE[e], posicionbalaX, posicionbalaY)
         # si se cumple esta condicion
         if colicion is True:
+            # Agrgando sonido cada vez que matamos al enemigo
+            sonido_colicion = mixer.Sound('golpe.mp3')
+            sonido_colicion.play()
             # la posicion de la bala vuelve a estar en la posicion de la nave o jugador
             posicionbalaY = 500
             # desaparece la bala
